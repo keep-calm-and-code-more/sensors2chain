@@ -12,9 +12,10 @@ class Modem(object):
         self.ser.close()
 
 
-def send(cmd, timeout=10):
-    modem = Modem()
-    modem.initSer()
+def sendCMD(cmd, timeout=10, modem=None):
+    if (modem is None) or (modem.ser is None):
+        modem = Modem()
+        modem.initSer()
     modem.ser.write(cmd.encode('utf-8') + b"\r\n")
     t_start = time.time()
     while True:
@@ -33,6 +34,26 @@ def send(cmd, timeout=10):
     modem.close()
 
 
+def configModem():
+    sendCMD('AT+CNMP=38')
+    sendCMD('AT+CMNB=2')
+    sendCMD('AT+NBSC=1')
+    sendCMD('AT+CIPSHUT')
+    sendCMD('AT+CGNAPN')
+    sendCMD('AT+CSTT="cmnbiot"')
+    sendCMD('AT+CIICR')
+    sendCMD('AT+CIFSR')
+
+
+def sendMsg(msg: str):
+    length = len(msg)
+    sendCMD('AT+CIPSTART="TCP","159.226.5.116",23300')
+    # time.sleep(2)
+    sendCMD('AT+CIPSEND={}'.format(length))
+    sendCMD(msg)
+    sendCMD('AT+CIPCLOSE=1')
+
+
 if __name__ == '__main__':
-    send("AT")
-    send("AT+CGNAPN")
+    configModem()
+    sendMsg("mmp")
