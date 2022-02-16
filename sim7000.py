@@ -2,6 +2,9 @@ import serial
 import time
 import json
 from typing import Union
+import zlib
+
+
 class Modem(object):
 
     def __init__(self):
@@ -66,10 +69,11 @@ def sendMsg(msg: str):
 
 if __name__ == '__main__':
     from main import create_trans_invoke, default_config
-    params = {"test": 1}
+    params = {"test": 1, "test2": 26.5, "test3": 99, "test4": 1087, "test5": False}
     trans_signed = create_trans_invoke("ContractAssetsTPL", 1, "putProof", json.dumps(params), sign_config=default_config)
     # print(len(bytes2hexstr(trans_signed.SerializeToString())))
     # print(len(bytes2base64str(trans_signed.SerializeToString())))
-
-    configModem()
-    sendMsg(trans_signed.SerializeToString())
+    print(len(trans_signed.SerializeToString()))
+    # print(len(zlib.compress(trans_signed.SerializeToString(),0))) #  worse than raw
+    # configModem()
+    # sendMsg(trans_signed.SerializeToString())
