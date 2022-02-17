@@ -1,0 +1,20 @@
+{
+    "extends": [
+        "./node_modules/react-redux-typescript-scripts/tslint.json",
+        "./node_modules/react-redux-typescript-scripts/tslint-react.json" // optional
+    ],
+    "rules": {
+        // you can further customize options here
+        "quotemark": [
+            [true, "double"],
+            [true, "single"]
+        ],
+        "no-import-side-effect": [true, { "ignore-module": "(\\.html|\\.css)$" }],
+        "no-for-in": true,
+        "no-submodule-imports": false,
+        "jsx-boolean-value": false,
+        "max-line-length": false,
+        "no-console": { "severity": "warning", "options": ["log", "error", "debug", "info", "time", "timeEnd", "trace"] },
+        "max-classes-per-file":false
+    }
+}
