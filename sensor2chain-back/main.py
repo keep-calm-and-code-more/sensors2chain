@@ -82,7 +82,7 @@ def device():
             # 全部
             res = devices
         else:
-            pass
+            res = [devices[0]]
         return makeRespose(res)
 
 
