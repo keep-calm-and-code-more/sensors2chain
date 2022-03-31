@@ -2,11 +2,10 @@ import serial
 import time
 import json
 from typing import Union
-import zlib
+from main import create_trans_invoke, default_config
 
 
 class Modem(object):
-
     def __init__(self):
         self.ser = None
 
@@ -21,7 +20,7 @@ def sendCMD(cmd: Union[str, bytes], timeout=10, modem=None):
     if (modem is None) or (modem.ser is None):
         modem = Modem()
         modem.initSer()
-    if type(cmd) is str:
+    if isinstance(cmd, str):
         cmdenc = cmd.encode('utf-8')
     else:
         cmdenc = cmd
@@ -58,22 +57,27 @@ def configModem():
     sendCMD('AT+CIFSR')
 
 
-def sendMsg(msg: str):
+def sendMsg(msg: str, ip: str, port: str):
     length = len(msg)
-    sendCMD('AT+CIPSTART="TCP","159.226.5.116",23300')
+    sendCMD('AT+CIPSTART="TCP","{}",{}'.format(ip, port))
     time.sleep(2)
     sendCMD('AT+CIPSEND={}'.format(length))
     sendCMD(msg)
     sendCMD('AT+CIPCLOSE=1')
 
 
+def submitData(data: dict, ip: str, port: str):
+    trans_signed = create_trans_invoke("ContractAssetsTPL", 1, "putProof", json.dumps(data), sign_config=default_config)
+    print(len(trans_signed.SerializeToString()))
+    configModem()
+    sendMsg(trans_signed.SerializeToString(), ip, port)
+
+
 if __name__ == '__main__':
-    from main import create_trans_invoke, default_config
     params = {"test": 1, "test2": 26.5, "test3": 99, "test4": 1087, "test5": False}
-    trans_signed = create_trans_invoke("ContractAssetsTPL", 1, "putProof", json.dumps(params), sign_config=default_config)
+    submitData(params, "159.226.5.116", "23300")
     # print(len(bytes2hexstr(trans_signed.SerializeToString())))
     # print(len(bytes2base64str(trans_signed.SerializeToString())))
-    print(len(trans_signed.SerializeToString()))
     # print(len(zlib.compress(trans_signed.SerializeToString(),0))) #  worse than raw
     # configModem()
     # sendMsg(trans_signed.SerializeToString())
