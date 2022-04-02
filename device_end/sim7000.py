@@ -2,14 +2,14 @@ import serial
 import time
 import json
 from typing import Union
-from main import create_trans_invoke, default_config
+from rcpy import create_trans_invoke, default_config
 
 
 class Modem(object):
     def __init__(self):
         self.ser = None
 
-    def initSer(self, port='COM6'):
+    def initSer(self, port='/dev/ttyUSB2'):
         self.ser = Modem.ser = serial.Serial(port=port, baudrate=115200, bytesize=8, parity='N', stopbits=1, timeout=1, rtscts=True, dsrdtr=True)
 
     def close(self):

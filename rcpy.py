@@ -111,14 +111,14 @@ def bytes2base64str(obj: bytes):
     return base64.b64encode(obj).decode('utf-8')
 
 
-if __name__ == '__main__':
-    params = {"test": 1}
-    trans_signed = create_trans_invoke("ContractAssetsTPL", 1, "putProof", json.dumps(params), sign_config=default_config)
-    trans_signed_str = bytes2hexstr(trans_signed.SerializeToString())
-    print(trans_signed_str)
-    print(len(trans_signed_str))
-    trans_signed_str_compressed = bytes2hexstr(zlib.compress(trans_signed.SerializeToString()))
+# if __name__ == '__main__':
+#     params = {"test": 1}
+#     trans_signed = create_trans_invoke("ContractAssetsTPL", 1, "putProof", json.dumps(params), sign_config=default_config)
+#     trans_signed_str = bytes2hexstr(trans_signed.SerializeToString())
+#     print(trans_signed_str)
+#     print(len(trans_signed_str))
+#     trans_signed_str_compressed = bytes2hexstr(zlib.compress(trans_signed.SerializeToString()))
 
-    print(trans_signed_str_compressed)
-    print(len(trans_signed_str_compressed))
-    # print(postTranByString("localhost:9081", trans_signed).text)
+#     print(trans_signed_str_compressed)
+#     print(len(trans_signed_str_compressed))
+#     # print(postTranByString("localhost:9081", trans_signed).text)

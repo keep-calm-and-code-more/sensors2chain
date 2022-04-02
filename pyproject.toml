@@ -1,0 +1,20 @@
+[tool.black]
+line-length = 88
+skip-string-normalization = false # 不跳过字符串的单引号转双引号处理
+experimental-string-processing = true # 字符串分割,当字符串超过line-length且其中有空格时有效
+target-version = ['py37']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+  | ^/peer_pb2.py
+)/
+'''

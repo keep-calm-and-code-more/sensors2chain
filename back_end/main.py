@@ -1,11 +1,15 @@
 from flask import Flask
 from flask import request
 from flask import json
-from db_models import db, Project, Device
+try:
+    from db_models import db, Project, Device
+except ImportError:
+    from .db_models import db, Project, Device
 from flask import abort
 
+
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mariadb+mariadbconnector://root:root@192.168.2.76:3307/device?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false'
 db.init_app(app)
 
 
@@ -58,4 +62,5 @@ def device():
 
 @ app.route("/sensor-record")
 def sensorRecord():
+    
     return makeRespose("sensor_records")
