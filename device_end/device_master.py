@@ -21,7 +21,9 @@ def queryShiftCount():
 
 
 if __name__ == '__main__':
-    d = {}
-    d["dht11"] = getHT()
-    d["tilt"] = queryShiftCount()
-    submitData(d, "159.226.5.116", "23300")
+    while True:
+        d = {}
+        d["dht11"] = getHT()
+        d["tilt"] = queryShiftCount()
+        submitData(d, "159.226.5.116", "23300")
+        time.sleep(timeInterval)
