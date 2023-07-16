@@ -19,8 +19,14 @@ pp = pprint.PrettyPrinter(depth=2)
 def saveD(list_d):
     print("saving {}".format(len(list_d)))
     with app.app_context():
-        for d in list_d:
-            db.session.add(d)
+        for r in list_d:
+            # SensorRecord.__table__.insert().prefix_with(' IGNORE').values(d)
+            d = {}
+            d["sensorType"] = r.sensorType
+            d["deviceID"] = r.deviceID
+            d["measurement"] = r.measurement
+            d["timeStamp"] = r.timeStamp
+            db.session.execute(SensorRecord.__table__.insert(prefixes=["IGNORE"], values=d))
             # pdb.set_trace()
             # pp.pprint(json.dumps(vars(d)))
         db.session.commit()
@@ -150,11 +156,11 @@ def extractRecordList(transaction_list) -> list:
     for rawitem in arg_list:
         item = rawitem["properties_body"]
         try:
-            record_list.append(SensorRecord(sensorType="温度传感器", deviceID="DEVICE_00", measurement=item["dht11"]["T"], timeStramp=tsParser(item["dht11"]["ts"])))
-            record_list.append(SensorRecord(sensorType="湿度传感器", deviceID="DEVICE_00", measurement=item["dht11"]["H"], timeStramp=tsParser(item["dht11"]["ts"])))
+            record_list.append(SensorRecord(sensorType="温度传感器", deviceID="DEVICE_00", measurement=item["dht11"]["T"], timeStamp=tsParser(item["dht11"]["ts"])))
+            record_list.append(SensorRecord(sensorType="湿度传感器", deviceID="DEVICE_00", measurement=item["dht11"]["H"], timeStamp=tsParser(item["dht11"]["ts"])))
             tilt_record_list = item["tilt"]
             for r in tilt_record_list:
-                record_list.append(SensorRecord(sensorType="振动传感器", deviceID="DEVICE_00", measurement=json.dumps(r), timeStramp=tsParser(r["ts_end"])))
+                record_list.append(SensorRecord(sensorType="振动传感器", deviceID="DEVICE_00", measurement=json.dumps(r), timeStamp=tsParser(r["ts_end"])))
         except Exception as e:
             print(e)
             pdb.set_trace()
