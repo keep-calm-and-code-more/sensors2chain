@@ -23,39 +23,28 @@ def beijingts():
 
 
 class IOTDBhelper(object):
-    def __init__(self, sensor_name_lst):
+    def __init__(self):
         ip = "127.0.0.1"
         port_ = "6667"
         username_ = "root"
         password_ = "root"
-        self.dbname = "root.rciot.pi_01"
-        self.sensor_name_lst = sensor_name_lst
+        self.device_id = "root.rciot.pi_01"
         self.session = Session(
             ip, port_, username_, password_, fetch_size=1024, zone_id="UTC+8"
         )
         self.session.open(False)
-        self.session.set_storage_group(self.dbname)
-        for sensor_name in sensor_name_lst:
-            ts_name = "{}.{}".format(self.dbname, sensor_name)
-            self.session.create_time_series(
-                ts_name, TSDataType.FLOAT, TSEncoding.PLAIN, Compressor.SNAPPY
-            )
-            print(
-                "{} expecting True, checking result: ".format(ts_name),
-                self.session.check_time_series_exists(ts_name),
-            )
+        self.session.set_storage_group(self.device_id)
+
+    def checkSeries(self, sensorName):
+        sensorFullName = "root.rciot.pi_01.{}".format(sensorName)
+        r = self.session.check_time_series_exists(sensorFullName)
+        print("{} expecting True, checking result: {}".format(sensorFullName, r))
 
     def __del__(self):
         self.session.close()
 
-    def insertData(self, ts, sensor_name, v, data_type=TSDataType.FLOAT):
-        if(sensor_name in self.sensor_name_lst):
-            session.insert_record(self.dbname, ts, [sensor_name], [data_type], [v])
-        else:
-            raise Exception("sensor_name not in list")
 
 if __name__ == "__main__":
-
     ip = "127.0.0.1"
     port_ = "6667"
     username_ = "root"
@@ -64,7 +53,10 @@ if __name__ == "__main__":
     session.open(False)
     session.set_storage_group("root.rciot.pi_01")
     session.create_time_series(
-        "root.rciot.pi_01.s_DHT22", TSDataType.FLOAT, TSEncoding.PLAIN, Compressor.SNAPPY
+        "root.rciot.pi_01.s_DHT22",
+        TSDataType.FLOAT,
+        TSEncoding.PLAIN,
+        Compressor.SNAPPY,
     )
     print(
         "root.rciot.pi_01.s_DHT22 expecting True, checking result: ",
