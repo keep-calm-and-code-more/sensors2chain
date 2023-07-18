@@ -4,6 +4,11 @@ from iotdb.Session import Session
 from iotdb.utils.IoTDBConstants import TSDataType, TSEncoding, Compressor
 
 
+ip = "127.0.0.1"
+port_ = "6667"
+username_ = "root"
+password_ = "root"
+
 def beijingts():
     # 获取当前时间的 datetime 对象
     now = datetime.datetime.now()
@@ -23,7 +28,7 @@ def beijingts():
 
 
 class IOTDBhelper(object):
-    def __init__(self):
+    def __init__(self, sensor):
         ip = "127.0.0.1"
         port_ = "6667"
         username_ = "root"
