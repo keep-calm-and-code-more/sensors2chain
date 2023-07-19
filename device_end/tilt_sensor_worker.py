@@ -20,7 +20,7 @@ def tilt_sensor_worker():
     session.set_storage_group(device)
     series_config = {
         "measurements": [
-            "tilt_sensor_count_last_30s",
+            "tilt_sensor_count_last_15s",
         ],
         "datatypes": [TSDataType.INT32 for i in range(1)],
     }

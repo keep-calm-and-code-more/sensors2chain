@@ -27,7 +27,7 @@ def sgp40worker():
         try:
             # print("Raw Gas: ", sgp.raw())
             s_voc_raw = sgp.measureRaw(27, 45)
-            voc_index = voc_algorithm.process(s_voc_raw)
+            voc_index = voc_algorithm.process(s_voc_raw) # 1-500
             session.insert_aligned_record(
                     device,
                     beijingts(),
