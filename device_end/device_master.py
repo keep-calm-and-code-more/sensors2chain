@@ -1,29 +1,48 @@
 import sqlite3
 import time
 import json
-from sim7000 import submitData
-from dht11 import getHT
+from sim7000 import sendPost
+from iotdb_helper import beijingts, ip, port_, username_, password_
+from iotdb.dbapi import connect
+import json
+
+time_interval = 120  # 提交的时间间隔
+device_id = "root.rciot.pi_01"
 
 
-timeInterval = 120  # 提交的时间间隔
-table_name = "tilt"
+def get_last_all():
+    conn = connect(
+        "192.168.199.20",
+        port_,
+        username_,
+        password_,
+        fetch_size=1024,
+        zone_id="UTC+8",
+        sqlalchemy_mode=False,
+    )
+    cursor = conn.cursor()
+    cursor.execute("select last * from root.rciot.pi_01.*")
+    last_all = cursor.fetchall()
+    return last_all
 
 
-def queryShiftCount():
-    now = int(time.time() * 1000)
-    left = now - timeInterval * 1000
-    conn = sqlite3.connect("tilt.db")
-    cur = conn.cursor()
-    r = []
-    for row in cur.execute("SELECT d FROM {} WHERE ts > ?".format(table_name), [left]):
-        r.append(json.loads(row[0]))
-    return r
+if __name__ == "__main__":
+    last_all = get_last_all()
+    tx_dict = {}
+    tx_dict["deviceID"] = device_id
+    records = []
+    ts_sthfromsamesensor_dict = {}
+    for item in last_all:
+        ts_k = item[0]
+        sensor_output_k = item[1].replace(device_id + ".", "")
+        v = item[2]
+        ts_sthfromsamesensor_dict.setdefault(ts_k, {})[sensor_output_k] = v
+    for ts_k, v in ts_sthfromsamesensor_dict.items():
+        records.append({"ts": ts_k, **v})
+    tx_dict["records"] = records
+    print(json.dumps(tx_dict, indent=4))
 
-
-if __name__ == '__main__':
-    while True:
-        d = {}
-        d["dht11"] = getHT()
-        d["tilt"] = queryShiftCount()
-        submitData(d, "159.226.5.116", "23300")
-        time.sleep(timeInterval)
+    register_dict = {"deviceID": device_id, "description": "测试用1号装置，搭载了……"}
+    sendPost(register_dict, "http://124.16.137.94:19999/transaction/postTranByString","Sensors2Chain",1, "register_device")
+    time.sleep(2)
+    sendPost(tx_dict, "http://124.16.137.94:19999/transaction/postTranByString","Sensors2Chain",1, "save_record")

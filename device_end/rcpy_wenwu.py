@@ -1,4 +1,4 @@
-import peer_pb2 as peer
+import rc2_pb2 as peer
 from google.protobuf import timestamp_pb2
 import time
 import uuid
@@ -11,8 +11,11 @@ from cryptography.hazmat.backends import default_backend
 import cryptography.hazmat.primitives.serialization as serial
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec
+import pickle
+import pdb
 
-default_config = {"credit_code": "121000005l35120456", "cert_name": "node1", "pvkey_path": "./somekey.pem"}
+
+default_config = {"credit_code": "identity-net:951002007l78123233", "cert_name": "super_admin", "pvkey_path": "./951002007l78123233.super_admin_for2.0.pem"}
 
 
 def __get_pvkey(fpath: str, password: str = None):
@@ -45,7 +48,7 @@ def __get_sig(transaction, config: dict):
     sig.cert_id.CopyFrom(certid)
     sig.tm_local.CopyFrom(timestamp_pb2.Timestamp(seconds=seconds, nanos=nanos))
     sig_bytes = __get_pvkey(config["pvkey_path"]).sign(
-        transaction.SerializeToString(), ec.ECDSA(hashes.SHA1())
+        transaction.SerializeToString(), ec.ECDSA(hashes.SHA256())
     )
     sig.signature = sig_bytes
     return sig
@@ -86,6 +89,7 @@ def create_trans_invoke(chaincode_name: str, chaincode_ver: str, func: str, para
 
 def __doPost(url, data):
     headers = {'Content-Type': 'application/json'}
+    pdb.set_trace()
     try:
         response = requests.post(url=url, headers=headers, data=json.dumps(data))
     except requests.exceptions.Timeout as e:
@@ -111,14 +115,11 @@ def bytes2base64str(obj: bytes):
     return base64.b64encode(obj).decode('utf-8')
 
 
-# if __name__ == '__main__':
-#     params = {"test": 1}
-#     trans_signed = create_trans_invoke("ContractAssetsTPL", 1, "putProof", json.dumps(params), sign_config=default_config)
-#     trans_signed_str = bytes2hexstr(trans_signed.SerializeToString())
-#     print(trans_signed_str)
-#     print(len(trans_signed_str))
-#     trans_signed_str_compressed = bytes2hexstr(zlib.compress(trans_signed.SerializeToString()))
+if __name__ == '__main__':
+    params = {"id":"19854","itemName":"222nnnname","registerType":"拍行","imgList":["imgurl"],"ownerStr":"测试用户balabala", "ban":True}
+    trans_signed = create_trans_invoke("CREvidence", 1, "register_item", json.dumps(params), sign_config=default_config)
+    # with open("changxianglian_vc.pickle","wb") as f:
+    #     pickle.dump(trans_signed,f)
 
-#     print(trans_signed_str_compressed)
-#     print(len(trans_signed_str_compressed))
-#     # print(postTranByString("localhost:9081", trans_signed).text)
+    print(postTranByString("localhost:9081", trans_signed).text)
+  
