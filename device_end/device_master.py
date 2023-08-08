@@ -6,13 +6,13 @@ from iotdb_helper import beijingts, ip, port_, username_, password_
 from iotdb.dbapi import connect
 import json
 
-time_interval = 120  # 提交的时间间隔
+time_interval = 30  # 提交的时间间隔
 device_id = "root.rciot.pi_01"
 
 
 def get_last_all():
     conn = connect(
-        "192.168.199.20",
+        "127.0.0.1",
         port_,
         username_,
         password_,
@@ -27,22 +27,20 @@ def get_last_all():
 
 
 if __name__ == "__main__":
-    last_all = get_last_all()
-    tx_dict = {}
-    tx_dict["deviceID"] = device_id
-    records = []
-    ts_sthfromsamesensor_dict = {}
-    for item in last_all:
-        ts_k = item[0]
-        sensor_output_k = item[1].replace(device_id + ".", "")
-        v = item[2]
-        ts_sthfromsamesensor_dict.setdefault(ts_k, {})[sensor_output_k] = v
-    for ts_k, v in ts_sthfromsamesensor_dict.items():
-        records.append({"ts": ts_k, **v})
-    tx_dict["records"] = records
-    print(json.dumps(tx_dict, indent=4))
-
-    register_dict = {"deviceID": device_id, "description": "测试用1号装置，搭载了……"}
-    sendPost(register_dict, "http://124.16.137.94:19999/transaction/postTranByString","Sensors2Chain",1, "register_device")
-    time.sleep(2)
-    sendPost(tx_dict, "http://124.16.137.94:19999/transaction/postTranByString","Sensors2Chain",1, "save_record")
+    while True:
+        last_all = get_last_all()
+        tx_dict = {}
+        tx_dict["deviceID"] = device_id
+        records = []
+        ts_sthfromsamesensor_dict = {}
+        for item in last_all:
+            ts_k = item[0]
+            sensor_output_k = item[1].replace(device_id + ".", "")
+            v = item[2]
+            ts_sthfromsamesensor_dict.setdefault(ts_k, {})[sensor_output_k] = v
+        for ts_k, v in ts_sthfromsamesensor_dict.items():
+            records.append({"ts": ts_k, **v})
+        tx_dict["records"] = records
+        print(json.dumps(tx_dict, indent=4))
+        sendPost(tx_dict, "http://124.16.137.94:19999/transaction/postTranByString","Sensors2Chain",1, "save_record")
+        time.sleep(time_interval)

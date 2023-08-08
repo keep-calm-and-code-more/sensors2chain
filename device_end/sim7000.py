@@ -11,7 +11,8 @@ class Modem(object):
     def __init__(self):
         self.ser = None
 
-    def initSer(self, port="COM5"):
+    def initSer(self, port="/dev/ttyUSB2"):
+        # windows下是COM5
         self.ser = Modem.ser = serial.Serial(
             port=port,
             baudrate=115200,
@@ -131,4 +132,4 @@ if __name__ == "__main__":
     # print(len(zlib.compress(trans_signed.SerializeToString(),0))) #  worse than raw
     # configModem()
     # sendMsg(trans_signed.SerializeToString())
-    pass
+

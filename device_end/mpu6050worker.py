@@ -31,6 +31,8 @@ def mpu6050worker():
         [Compressor.SNAPPY for i in range(7)],
     )
     sensor = mpu6050(0x68)
+    # 这玩意可以校准，mpu6050库合并了 filmo/soft_calibration
+    print("read_accel_range: {},read_gyro_range: {}".format(sensor.read_accel_range(), sensor.read_gyro_range()))
     while True:
         try:
             accelerometer_data = sensor.get_accel_data()

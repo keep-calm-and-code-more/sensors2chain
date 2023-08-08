@@ -1,0 +1,57 @@
+{
+    "deviceID": "root.rciot.pi_01",
+    "records": [
+        {
+            "ts": 1690031661270,
+            "bmp388.bmp388_altitude": "131.92953",
+            "bmp388.bmp388_pressure": "99750.39",
+            "bmp388.bmp388_temperature": "27.64142"
+        },
+        {
+            "ts": 1690031658486,
+            "dht11.dht11_humidity": "38.0",
+            "dht11.dht11_temperature": "31.0"
+        },
+        {
+            "ts": 1690031660703,
+            "flame_sensor.flame_sensor_alarm": "false",
+            "flame_sensor.flame_sensor_raw_10bit": "1023"
+        },
+        {
+            "ts": 1690031660190,
+            "infrared_temperature_sensor.infrared_temperature_sensor_ambient_temp": "26.73",
+            "infrared_temperature_sensor.infrared_temperature_sensor_object_temp": "26.43"
+        },
+        {
+            "ts": 1690031659237,
+            "light_sensor.light_sensor_full_spectrum_light": "1769572",
+            "light_sensor.light_sensor_infrared_light": "100",
+            "light_sensor.light_sensor_lux": "14",
+            "light_sensor.light_sensor_visible_light": "1769545"
+        },
+        {
+            "ts": 1690031659458,
+            "mpu6050.mpu6050_gyro_x": "-2.908397",
+            "mpu6050.mpu6050_gyro_y": "-0.6793893",
+            "mpu6050.mpu6050_gyro_z": "-0.5496183",
+            "mpu6050.mpu6050_temperature": "28.859411",
+            "mpu6050.mpu6050_x": "-2.5378537",
+            "mpu6050.mpu6050_y": "-6.0262055",
+            "mpu6050.mpu6050_z": "-7.6782045"
+        },
+        {
+            "ts": 1690031660428,
+            "mq5_gas_sensor.mq5_gas_sensor_alarm": "false",
+            "mq5_gas_sensor.mq5_gas_sensor_raw_10bit": "42"
+        },
+        {
+            "ts": 1690031660895,
+            "sgp40.sgp40_voc_index": "0.0",
+            "sgp40.sgp40_voc_raw": "25710"
+        },
+        {
+            "ts": 1690031659828,
+            "uv_sensor.uv_sensor_raw_10bit": "0"
+        }
+    ]
+}
