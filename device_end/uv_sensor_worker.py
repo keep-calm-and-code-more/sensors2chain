@@ -4,17 +4,19 @@ from iotdb.utils.IoTDBConstants import TSDataType, TSEncoding, Compressor
 from iotdb.Session import Session
 import smbus as smbus
 import RPi.GPIO as GPIO
+from device_master import device_id
 
-ADC=smbus.SMBus(1)
+ADC = smbus.SMBus(1)
 
 flame_ain_raw = 0x14
 flame_ain_v = 0x24
 flame_ain_p = 0x34
 
+
 def uv_sensor_worker():
     session = Session(ip, port_, username_, password_, fetch_size=1024, zone_id="UTC+8")
     session.open(False)
-    device = "root.rciot.pi_01.uv_sensor"
+    device = device_id + ".uv_sensor"
     session.set_storage_group(device)
     series_config = {
         "measurements": [

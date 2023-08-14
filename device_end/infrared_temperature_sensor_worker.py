@@ -3,13 +3,14 @@ import time
 from iotdb_helper import beijingts, ip, port_, username_, password_
 from iotdb.utils.IoTDBConstants import TSDataType, TSEncoding, Compressor
 from iotdb.Session import Session
+from device_master import device_id
 
 
 def infrared_temperature_sensor_worker():
     sensor = MLX90614()
     session = Session(ip, port_, username_, password_, fetch_size=1024, zone_id="UTC+8")
     session.open(False)
-    device = "root.rciot.pi_01.infrared_temperature_sensor"
+    device = device_id + ".infrared_temperature_sensor"
     session.set_storage_group(device)
     series_config = {
         "measurements": [

@@ -27,26 +27,26 @@ def beijingts():
     return timestamp
 
 
-class IOTDBhelper(object):
-    def __init__(self, sensor):
-        ip = "127.0.0.1"
-        port_ = "6667"
-        username_ = "root"
-        password_ = "root"
-        self.device_id = "root.rciot.pi_01"
-        self.session = Session(
-            ip, port_, username_, password_, fetch_size=1024, zone_id="UTC+8"
-        )
-        self.session.open(False)
-        self.session.set_storage_group(self.device_id)
+# class IOTDBhelper(object):
+#     def __init__(self, sensor):
+#         ip = "127.0.0.1"
+#         port_ = "6667"
+#         username_ = "root"
+#         password_ = "root"
+#         self.device_id = "root.rciot.pi_01"
+#         self.session = Session(
+#             ip, port_, username_, password_, fetch_size=1024, zone_id="UTC+8"
+#         )
+#         self.session.open(False)
+#         self.session.set_storage_group(self.device_id)
 
-    def checkSeries(self, sensorName):
-        sensorFullName = "root.rciot.pi_01.{}".format(sensorName)
-        r = self.session.check_time_series_exists(sensorFullName)
-        print("{} expecting True, checking result: {}".format(sensorFullName, r))
+#     def checkSeries(self, sensorName):
+#         sensorFullName = "root.rciot.pi_01.{}".format(sensorName)
+#         r = self.session.check_time_series_exists(sensorFullName)
+#         print("{} expecting True, checking result: {}".format(sensorFullName, r))
 
-    def __del__(self):
-        self.session.close()
+#     def __del__(self):
+#         self.session.close()
 
 
 if __name__ == "__main__":

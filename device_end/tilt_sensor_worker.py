@@ -6,6 +6,7 @@ from iotdb.Session import Session
 import RPi.GPIO as GPIO
 import json
 import sqlite3
+from device_master import device_id
 
 GPIO.setmode(GPIO.BCM)
 INPUT_PIN = 27
@@ -16,7 +17,7 @@ timeInterval = 15  # 统计周期
 def tilt_sensor_worker():
     session = Session(ip, port_, username_, password_, fetch_size=1024, zone_id="UTC+8")
     session.open(False)
-    device = "root.rciot.pi_01.tilt_sensor"
+    device = device_id + ".tilt_sensor"
     session.set_storage_group(device)
     series_config = {
         "measurements": [
