@@ -21,7 +21,7 @@ def get_last_all():
         sqlalchemy_mode=False,
     )
     cursor = conn.cursor()
-    cursor.execute("select last * from root.rciot.pi_01.*")
+    cursor.execute("select last * from {}.*".format(device_id))
     last_all = cursor.fetchall()
     return last_all
 
