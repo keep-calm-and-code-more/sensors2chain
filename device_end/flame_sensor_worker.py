@@ -5,6 +5,7 @@ from iotdb.Session import Session
 import smbus as smbus
 import RPi.GPIO as GPIO
 from device_master import device_id
+from iotdb_helper import suppress_err, restore_err
 
 ADC = smbus.SMBus(1)
 
@@ -14,10 +15,17 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(din, GPIO.IN)
 
 
+def getFlame():
+    sensor_raw = ADC.read_word_data(0x24, in_raw)
+    alarm = not bool(GPIO.input(din))
+    return sensor_raw, alarm
+
+
 def flame_sensor_worker():
     session = Session(ip, port_, username_, password_, fetch_size=1024, zone_id="UTC+8")
     session.open(False)
     device = device_id + ".flame_sensor"
+    out = suppress_err()
     session.set_storage_group(device)
     series_config = {
         "measurements": ["flame_sensor_raw_10bit", "flame_sensor_alarm"],
@@ -30,10 +38,10 @@ def flame_sensor_worker():
         [TSEncoding.PLAIN for i in range(2)],
         [Compressor.SNAPPY for i in range(2)],
     )
+    restore_err(out)
     while True:
         try:
-            sensor_raw = ADC.read_word_data(0x24, in_raw)
-            alarm = not bool(GPIO.input(din))
+            sensor_raw, alarm = getFlame()
             session.insert_aligned_record(
                 device,
                 beijingts(),
@@ -41,7 +49,7 @@ def flame_sensor_worker():
                 series_config["datatypes"],
                 [sensor_raw, alarm],
             )
-            print("sent: {}| {}".format(sensor_raw, alarm))
+            print("---火焰传感器记录: {}| {}".format(sensor_raw, alarm))
         except Exception as e:
             print("except: {}".format(type(e)))
             raise e

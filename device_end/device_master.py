@@ -6,7 +6,7 @@ from iotdb_helper import beijingts, ip, port_, username_, password_
 from iotdb.dbapi import connect
 import json
 
-time_interval = 30  # 提交的时间间隔
+time_interval = 45  # 提交的时间间隔
 device_id = "root.rciot.pi_01"
 
 

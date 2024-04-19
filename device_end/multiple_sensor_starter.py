@@ -18,3 +18,4 @@ if __name__ == '__main__':
     for worker in all_worker:
         p = multiprocessing.Process(target=worker)
         p.start()
+

@@ -4,6 +4,7 @@ from iotdb_helper import beijingts, ip, port_, username_, password_
 from iotdb.utils.IoTDBConstants import TSDataType, TSEncoding, Compressor
 from iotdb.Session import Session
 from device_master import device_id
+from iotdb_helper import suppress_err, restore_err
 
 
 def bmp388worker():
@@ -11,6 +12,7 @@ def bmp388worker():
     session = Session(ip, port_, username_, password_, fetch_size=1024, zone_id="UTC+8")
     session.open(False)
     device = device_id + ".bmp388"
+    out = suppress_err()
     session.set_storage_group(device)
     series_config = {
         "measurements": ["bmp388_temperature", "bmp388_pressure", "bmp388_altitude"],
@@ -23,6 +25,7 @@ def bmp388worker():
         [TSEncoding.PLAIN for i in range(3)],
         [Compressor.SNAPPY for i in range(3)],
     )
+    restore_err(out)
     while True:
         try:
             r = bmp388.get_temperature_and_pressure_and_altitude()
@@ -34,7 +37,7 @@ def bmp388worker():
                 series_config["datatypes"],
                 r,
             )
-            print("sent: {} | {} | {}".format(*r))
+            print("---BMP388传感器记录: {} | {} | {}".format(*r))
         except Exception as e:
             print("except: {}".format(type(e)))
         finally:

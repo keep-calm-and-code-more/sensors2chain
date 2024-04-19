@@ -5,6 +5,7 @@ from iotdb.Session import Session
 import smbus as smbus
 import RPi.GPIO as GPIO
 from device_master import device_id
+from iotdb_helper import  suppress_err, restore_err
 
 ADC = smbus.SMBus(1)
 
@@ -17,6 +18,7 @@ def uv_sensor_worker():
     session = Session(ip, port_, username_, password_, fetch_size=1024, zone_id="UTC+8")
     session.open(False)
     device = device_id + ".uv_sensor"
+    out = suppress_err()
     session.set_storage_group(device)
     series_config = {
         "measurements": [
@@ -31,6 +33,7 @@ def uv_sensor_worker():
         [TSEncoding.PLAIN for i in range(1)],
         [Compressor.SNAPPY for i in range(1)],
     )
+    restore_err(out)
     while True:
         try:
             uv_sensor_raw = ADC.read_word_data(0x24, flame_ain_raw)
@@ -41,7 +44,7 @@ def uv_sensor_worker():
                 series_config["datatypes"],
                 [uv_sensor_raw],
             )
-            print("sent: {}".format(uv_sensor_raw))
+            print("---紫外线传感器记录: {}".format(uv_sensor_raw))
         except Exception as e:
             print("except: {}".format(type(e)))
             raise e

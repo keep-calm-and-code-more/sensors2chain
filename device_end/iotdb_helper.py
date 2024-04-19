@@ -2,12 +2,29 @@ import datetime
 import pytz
 from iotdb.Session import Session
 from iotdb.utils.IoTDBConstants import TSDataType, TSEncoding, Compressor
-
+import sys
+from io import StringIO
 
 ip = "127.0.0.1"
 port_ = "6667"
 username_ = "root"
 password_ = "root"
+
+def suppress_err():
+    # 创建一个StringIO对象，用于捕获标准输出
+    output = StringIO()
+    sys.stderr = output  # 将标准输出重定向到StringIO对象
+
+    return output
+
+def restore_err(output):
+    # 恢复标准输出
+    sys.stderr = sys.__stderr__
+    # 获取捕获的输出内容
+    captured_output = output.getvalue()
+    output.close()
+    return captured_output
+
 
 def beijingts():
     # 获取当前时间的 datetime 对象

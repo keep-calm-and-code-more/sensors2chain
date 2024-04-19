@@ -5,12 +5,15 @@ from iotdb.utils.IoTDBConstants import TSDataType, TSEncoding, Compressor
 from iotdb.Session import Session
 import time
 from device_master import device_id
+from iotdb_helper import  suppress_err, restore_err
+
 
 def mpu6050worker():
     """加速度传感器，需要主动读取"""
     session = Session(ip, port_, username_, password_, fetch_size=1024, zone_id="UTC+8")
     session.open(False)
     device = device_id + ".mpu6050"
+    out = suppress_err()
     session.set_storage_group(device)
     series_config = {
         "measurements": [
@@ -31,6 +34,7 @@ def mpu6050worker():
         [TSEncoding.PLAIN for i in range(7)],
         [Compressor.SNAPPY for i in range(7)],
     )
+    restore_err(out)
     sensor = mpu6050(0x68)
     # 这玩意可以校准，mpu6050库合并了 filmo/soft_calibration
     print("read_accel_range: {},read_gyro_range: {}".format(sensor.read_accel_range(), sensor.read_gyro_range()))
@@ -55,7 +59,7 @@ def mpu6050worker():
                 ],
             )
             print(
-                "sent: {} | {} | {}".format(accelerometer_data, gyro_data, temperature)
+                "---MPU6050记录: {} | {} | {}".format(accelerometer_data, gyro_data, temperature)
             )
         except Exception as e:
             print("except: {}".format(type(e)))

@@ -4,6 +4,7 @@ from iotdb_helper import beijingts, ip, port_, username_, password_
 from iotdb.utils.IoTDBConstants import TSDataType, TSEncoding, Compressor
 from iotdb.Session import Session
 from device_master import device_id
+from iotdb_helper import suppress_err, restore_err
 
 
 def light_sensor_worker():
@@ -11,6 +12,7 @@ def light_sensor_worker():
     session = Session(ip, port_, username_, password_, fetch_size=1024, zone_id="UTC+8")
     session.open(False)
     device = device_id + ".light_sensor"
+    out = suppress_err()
     session.set_storage_group(device)
     series_config = {
         "measurements": [
@@ -28,6 +30,7 @@ def light_sensor_worker():
         [TSEncoding.PLAIN for i in range(4)],
         [Compressor.SNAPPY for i in range(4)],
     )
+    restore_err(out)
     while True:
         try:
             lux = sensor.Lux
@@ -43,7 +46,7 @@ def light_sensor_worker():
                 series_config["datatypes"],
                 list(light_record),
             )
-            print("sent: {} | {} | {}".format(*light_record))
+            print("---光敏传感器记录: {} | {} | {}".format(*light_record))
         except Exception as e:
             print("except: {}".format(type(e)))
         finally:

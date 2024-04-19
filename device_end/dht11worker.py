@@ -4,6 +4,7 @@ from iotdb_helper import beijingts, ip, port_, username_, password_
 from iotdb.utils.IoTDBConstants import TSDataType, TSEncoding, Compressor
 from iotdb.Session import Session
 from device_master import device_id
+from iotdb_helper import suppress_err, restore_err
 
 
 def getHT():
@@ -21,6 +22,7 @@ def dht11worker():
     session = Session(ip, port_, username_, password_, fetch_size=1024, zone_id="UTC+8")
     session.open(False)
     device = device_id + ".dht11"
+    out = suppress_err()
     session.set_storage_group(device)
     series_config = {
         "measurements": [
@@ -36,6 +38,7 @@ def dht11worker():
         [TSEncoding.PLAIN for i in range(2)],
         [Compressor.SNAPPY for i in range(2)],
     )
+    restore_err(out)
     while True:
         try:
             ht = getHT()
@@ -46,7 +49,7 @@ def dht11worker():
                 series_config["datatypes"],
                 list(ht),
             )
-            print("sent: {} | {}".format(*ht))
+            print("---DHT11记录: {} | {}".format(*ht))
         except Exception as e:
             print("except: {}".format(type(e)))
             raise e
